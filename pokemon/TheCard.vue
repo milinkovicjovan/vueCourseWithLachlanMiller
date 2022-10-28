@@ -3,9 +3,11 @@
     <div class="title">
       <slot name="title" />
     </div>
+
     <div class="content">
       <slot name="content" />
     </div>
+
     <div class="description">
       <slot name="description" />
     </div>

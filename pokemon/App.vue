@@ -1,71 +1,60 @@
 <template>
-  <div class="cards">
-    <the-card
-      v-for="pokemon in pokemons"
-      :key="pokemon.id"
-      @click="fetchEvolutions(pokemon)"
-    >
-      <template v-slot:title>
-        {{ pokemon.name }}
-      </template>
-      <template v-slot:content> <img :src="pokemon.sprite" /> </template>
-      <template v-slot:description>
-        <div v-for="type in pokemon.types" :key="type">
-          {{ type }}
-        </div>
-      </template>
-    </the-card>
-  </div>
-  <div class="cards">
-    <the-card v-for="pokemon in evolutions" :key="pokemon.id">
-      <template v-slot:title>
-        {{ pokemon.name }}
-      </template>
-      <template v-slot:content> <img :src="pokemon.sprite" /> </template>
-      <template v-slot:description>
-        <div v-for="type in pokemon.types" :key="type">
-          {{ type }}
-        </div>
-      </template>
-    </the-card>
-  </div>
+  <pokemon-cards
+    :pokemon="pokemon"
+    :selectedId="selectedId"
+    @pokemonSelected="fetchEvolutions"
+  />
+
+  <pokemon-cards :pokemon="evolutions" />
 </template>
 
 <script>
-import TheCard from "./TheCard.vue";
+import PokemonCards from "./PokemonCards.vue";
+
 const api = "https://pokeapi.co/api/v2/pokemon";
-const IDS = [1, 4, 7];
+const ids = [1, 4, 7];
 
 export default {
   components: {
-    TheCard,
+    PokemonCards,
   },
+
   data() {
     return {
-      pokemons: [],
+      pokemon: [],
       evolutions: [],
+      selectedId: null,
     };
   },
 
   async created() {
-    this.pokemons = await this.fetchData(IDS);
+    this.pokemon = await this.fetchData(ids);
   },
 
   methods: {
     async fetchEvolutions(pokemon) {
       this.evolutions = await this.fetchData([pokemon.id + 1, pokemon.id + 2]);
+      this.selectedId = pokemon.id;
     },
-    async fetchData(ids) {
-      const responses = await Promise.all(
-        ids.map((id) => window.fetch(`${api}/${id}`))
-      );
-      const json = await Promise.all(responses.map((data) => data.json()));
 
-      return json.map((datum) => ({
+    async fetchData(idsToFetch) {
+      const responses = await Promise.all(
+        idsToFetch.map((id) => window.fetch(`${api}/${id}`))
+      );
+
+      const data = await Promise.all(
+        responses.map((response) => response.json())
+      );
+
+      return data.map((datum) => ({
         id: datum.id,
         name: datum.name,
         sprite: datum.sprites.other["official-artwork"].front_default,
-        types: datum.types.map((type) => type.type.name),
+        types: datum.types.map((type) => {
+          return {
+            name: type.type.name,
+          };
+        }),
       }));
     },
   },
@@ -73,11 +62,19 @@ export default {
 </script>
 
 <style scoped>
+img {
+  width: 100%;
+}
+
 .cards {
   display: flex;
 }
 
-img {
-  width: 100%;
+.opace {
+  opacity: 0.5;
+}
+
+.card:hover {
+  opacity: 1;
 }
 </style>
