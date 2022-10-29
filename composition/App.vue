@@ -1,59 +1,36 @@
 <template>
-  <button @click="increment">{{ count }}</button>
-  <button @click="a++">{{ a }}</button>
+  A: <button @click="a++">{{ a }}</button> B:
   <button @click="b++">{{ b }}</button>
-  <p>{{ total }}</p>
-  <div v-for="number in history" :key="number">
-    {{ number }}
+  <h1>A + B * 2 = {{ double }}</h1>
+  <h1>History</h1>
+  <div v-for="val in history" :key="val">
+    {{ val }}
   </div>
 </template>
 
 <script>
-import { ref, computed, watch } from "vue";
+import { useNumbers } from "./useNumbers.js";
 
 export default {
   setup() {
-    const count = ref(0);
-    const a = ref(0);
-    const b = ref(0);
-    const history = ref([]);
-
-    const increment = () => {
-      count.value++;
-    };
-
-    const total = computed(() => {
-      return count.value + a.value + b.value;
-    });
-
-    watch([a, b], ([newA, newB], [oldA, oldB]) => {
-      if (newA !== oldA) {
-        history.value.push(`A: ${oldA} -> ${newA}`);
-      }
-      if (newB !== oldB) {
-        history.value.push(`B: ${oldB} => ${newB}`);
-      }
-    });
+    const { a, b, history, double } = useNumbers();
 
     return {
       a,
       b,
       history,
-      count,
-      total,
-      increment,
+      double,
     };
   },
 };
 </script>
 
-<style scoped>
-p {
+<style>
+* {
   font-size: 40px;
 }
+
 button {
-  height: 100px;
-  width: 100px;
-  font-size: 40px;
+  margin: 5px;
 }
 </style>
