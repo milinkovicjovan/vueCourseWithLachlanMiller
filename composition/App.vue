@@ -1,17 +1,30 @@
 <template>
-  <div>{{ msg }}</div>
+  <button @click="increment">{{ count }}</button>
 </template>
 
 <script>
+import { ref } from "vue";
+
 export default {
   setup() {
-    const msg = "Hello World";
+    const count = ref(0);
+
+    const increment = () => {
+      count.value++;
+    };
 
     return {
-      msg,
+      count,
+      increment,
     };
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+button {
+  height: 200px;
+  width: 200px;
+  font-size: 40px;
+}
+</style>
