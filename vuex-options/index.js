@@ -1,7 +1,7 @@
 import { createApp } from "vue";
+import App from "./App.vue";
 import { store } from "./store.js";
-import AppOptions from "./AppOptions.vue";
 
-const app = createApp(AppOptions);
+const app = createApp(App);
 app.use(store);
 app.mount("#app");

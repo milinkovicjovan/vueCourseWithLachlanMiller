@@ -1,15 +1,8 @@
 import { createStore } from "vuex";
+import { posts } from "./posts.js";
 
 export const store = createStore({
-  state() {
-    return {
-      count: 0,
-    };
-  },
-
-  mutations: {
-    increment(state, { number }) {
-      state.count += number;
-    },
+  modules: {
+    posts,
   },
 });
